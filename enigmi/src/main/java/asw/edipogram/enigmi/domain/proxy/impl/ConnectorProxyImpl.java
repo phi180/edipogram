@@ -5,15 +5,15 @@ import asw.edipogram.common.event.EnigmaCreatedEvent;
 import asw.edipogram.enigmi.domain.EnigmiSeguitiClient;
 import asw.edipogram.enigmi.domain.EnigmaDomainEventPublisher;
 import asw.edipogram.enigmi.domain.EnigmiSeguitiClientAsync;
+import asw.edipogram.enigmi.domain.entity.Enigma;
 import asw.edipogram.enigmi.domain.proxy.ConnectorProxy;
 import asw.edipogram.enigmi.domain.proxy.enums.ForwardMethod;
-import asw.edipogram.enigmi.domain.vo.EnigmaVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConnectorProxyImpl implements ConnectorProxy { // RIVEDERE NOME DELLA CLASSE TODO
+public class ConnectorProxyImpl implements ConnectorProxy {
 
     @Value("${asw.edipogram.mode}")
     private String FORWARD_METHOD = ForwardMethod.MESSAGE.getName();
@@ -28,20 +28,20 @@ public class ConnectorProxyImpl implements ConnectorProxy { // RIVEDERE NOME DEL
     private EnigmaDomainEventPublisher publisher;
 
     @Override
-    public void forward(EnigmaVO enigmaVO) {
+    public void forward(Enigma enigma) {
 
         if(FORWARD_METHOD.equals(ForwardMethod.MESSAGE.toString())) {
             EnigmaCreatedEvent enigmaCreatedEvent = new EnigmaCreatedEvent(
-                    enigmaVO.getAutore(),enigmaVO.getTipo(),enigmaVO.getTipoSpecifico(),
-                    enigmaVO.getTitolo(),enigmaVO.getTesto());
+                    enigma.getAutore(),enigma.getTipo(),enigma.getTipoSpecifico(),
+                    enigma.getTitolo(),enigma.getTesto());
             publisher.publish(enigmaCreatedEvent);
         } else if(FORWARD_METHOD.equals(ForwardMethod.REST.toString())) {
-            EnigmaCreatedDTO enigmaCreatedDTO = new EnigmaCreatedDTO(enigmaVO.getAutore(),enigmaVO.getTipo(),enigmaVO.getTipoSpecifico(),
-                    enigmaVO.getTitolo(),enigmaVO.getTesto());
+            EnigmaCreatedDTO enigmaCreatedDTO = new EnigmaCreatedDTO(enigma.getAutore(),enigma.getTipo(),enigma.getTipoSpecifico(),
+                    enigma.getTitolo(),enigma.getTesto());
             enigmiSeguitiClient.createEnigma(enigmaCreatedDTO);
         } else if(FORWARD_METHOD.equals(ForwardMethod.REST_ASYNC.toString())) {
-            EnigmaCreatedDTO enigmaCreatedDTO = new EnigmaCreatedDTO(enigmaVO.getAutore(),enigmaVO.getTipo(),enigmaVO.getTipoSpecifico(),
-                    enigmaVO.getTitolo(),enigmaVO.getTesto());
+            EnigmaCreatedDTO enigmaCreatedDTO = new EnigmaCreatedDTO(enigma.getAutore(),enigma.getTipo(),enigma.getTipoSpecifico(),
+                    enigma.getTitolo(),enigma.getTesto());
             enigmiSeguitiClientAsync.createEnigma(enigmaCreatedDTO);
         }
 

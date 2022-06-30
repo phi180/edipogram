@@ -1,9 +1,7 @@
 package asw.edipogram.enigmi.domain;
 
-import asw.edipogram.common.event.EnigmaCreatedEvent;
 import asw.edipogram.enigmi.domain.entity.Enigma;
 import asw.edipogram.enigmi.domain.proxy.ConnectorProxy;
-import asw.edipogram.enigmi.domain.vo.EnigmaVO;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,8 +20,7 @@ public class EnigmiService {
 		Enigma enigma = new Enigma(autore, tipo, tipoSpecifico, titolo, testo, soluzione); 
 		enigma = enigmiRepository.save(enigma);
 
-		EnigmaVO enigmaVO = new EnigmaVO(autore,tipo,tipoSpecifico,titolo,testo,soluzione);
-		connectorProxy.forward(enigmaVO);
+		connectorProxy.forward(enigma);
 
 		return enigma;
 	}
