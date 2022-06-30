@@ -1,13 +1,16 @@
 package asw.edipogram.enigmiseguiti.domain.service;
 
 import asw.edipogram.enigmiseguiti.domain.entity.Enigma;
+import asw.edipogram.enigmiseguiti.domain.vo.EnigmaCollectionOutVO;
+import asw.edipogram.enigmiseguiti.domain.vo.EnigmaOutVO;
+import asw.edipogram.enigmiseguiti.domain.vo.EnigmaVO;
 
 import java.util.*;
 
 public interface EnigmiService {
 
-	Collection<Enigma> getEnigmiByTipi(Collection<String> tipi);
+	EnigmaCollectionOutVO getEnigmiByTipi(Collection<String> tipi);
 
-	Enigma saveEnigma(Enigma enigmaVO);
+	EnigmaOutVO saveEnigma(EnigmaVO enigmaVO);
 
 }

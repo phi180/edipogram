@@ -3,12 +3,14 @@ package asw.edipogram.enigmiseguiti.domain;
 import asw.edipogram.common.event.ConnessioneCreatedEvent;
 import asw.edipogram.common.event.DomainEvent;
 import asw.edipogram.common.event.EnigmaCreatedEvent;
-import asw.edipogram.enigmiseguiti.domain.entity.Connessione;
 import asw.edipogram.enigmiseguiti.domain.entity.Enigma;
+import asw.edipogram.enigmiseguiti.domain.enums.ConnessioniConstants;
+import asw.edipogram.enigmiseguiti.domain.enums.EnigmiConstants;
+import asw.edipogram.enigmiseguiti.domain.exceptions.EdipogramException;
 import asw.edipogram.enigmiseguiti.domain.service.ConnessioniService;
 import asw.edipogram.enigmiseguiti.domain.service.EnigmiSeguitiService;
 import asw.edipogram.enigmiseguiti.domain.service.EnigmiService;
-
+import asw.edipogram.enigmiseguiti.domain.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,23 +50,30 @@ public class DomainEventConsumer {
     private void onEnigmaCreated(EnigmaCreatedEvent event) {
         log.info("DomainEventConsumer - onEnigmaCreated(): event={}",event);
 
-        Enigma enigma = new Enigma(event.getAutore(),event.getTipo(), event.getTipoSpecifico(), event.getTitolo(), event.getTesto());
-        enigma = enigmiService.saveEnigma(enigma);
+        EnigmaVO enigmaInVO = new EnigmaVO(event.getAutore(),event.getTipo(), event.getTipoSpecifico(), event.getTitolo(), event.getTesto());
+        EnigmaOutVO enigmaOutVO = enigmiService.saveEnigma(enigmaInVO);
 
-        Collection<String> utentiCollection = connessioniService.getUtentiByTipoEnigma(enigma.getTipo());
+        if(!EnigmiConstants.ENIGMA_OK.getCodice().equals(enigmaOutVO.getCode())) {
+            throw new EdipogramException(enigmaOutVO.getCode(),enigmaOutVO.getDescription());
+        }
 
-        enigmiSeguitiService.saveEnigmiSeguitiByEnigma(enigma, utentiCollection);
+        Collection<String> utentiCollection = connessioniService.getUtentiByTipoEnigma(enigmaOutVO.getEnigmaVO().getTipo());
+        EnigmaSeguitoOutVO enigmaSeguitoOutVO = enigmiSeguitiService.saveEnigmiSeguitiByEnigma(enigmaOutVO.getEnigmaVO(), enigmaOutVO.getIdEnigma(), utentiCollection);
     }
 
     private void onConnessioneCreated(ConnessioneCreatedEvent event) {
         log.info("DomainEventConsumer - onConnessioneCreated(): event={}",event);
 
-        Connessione connessione = new Connessione(event.getUtente(),event.getTipo());
-        connessione = connessioniService.saveConnessione(connessione);
+        ConnessioneVO connessioneInVO = new ConnessioneVO(event.getUtente(),event.getTipo());
+        ConnessioneOutVO connessioneOutVO = connessioniService.saveConnessione(connessioneInVO);
 
-        Collection<Enigma> enigmaCollection = enigmiService.getEnigmiByTipi(List.of(event.getTipo()));
+        if(!ConnessioniConstants.CONNESSIONE_OK.getCodice().equals(connessioneOutVO.getCode())) {
+            throw new EdipogramException(connessioneOutVO.getCode(),connessioneOutVO.getDescription());
+        }
 
-        enigmiSeguitiService.saveEnigmiSeguitiByUtenteConnessione(event.getUtente(),enigmaCollection);
+        EnigmaCollectionOutVO enigmaCollectionOutVO = enigmiService.getEnigmiByTipi(List.of(event.getTipo()));
+        EnigmaSeguitoOutVO enigmaSeguitoOutVO = enigmiSeguitiService.saveEnigmiSeguitiByUtenteConnessione(event.getUtente(),enigmaCollectionOutVO.getEnigmaVOMap());
+
     }
 
 }

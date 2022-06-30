@@ -1,7 +1,7 @@
 package asw.edipogram.enigmiseguiti.domain.service;
 
-import asw.edipogram.enigmiseguiti.domain.entity.Enigma;
-import asw.edipogram.enigmiseguiti.domain.entity.EnigmaSeguito;
+import asw.edipogram.enigmiseguiti.domain.vo.EnigmaSeguitoOutVO;
+import asw.edipogram.enigmiseguiti.domain.vo.EnigmaVO;
 
 import java.util.Collection;
 import java.util.Map;
@@ -11,10 +11,10 @@ public interface EnigmiSeguitiService {
     /**
      *  @param enigma @return EnigmaSeguitoOutVO
      * @param utenti*/
-    Collection<EnigmaSeguito> saveEnigmiSeguitiByEnigma(Enigma enigma, Collection<String> utenti);
+    EnigmaSeguitoOutVO saveEnigmiSeguitiByEnigma(EnigmaVO enigma, Long idEnigma, Collection<String> utenti);
 
-    Collection<EnigmaSeguito> saveEnigmiSeguitiByUtenteConnessione(String utente, Collection<Enigma> enigmi);
+    EnigmaSeguitoOutVO saveEnigmiSeguitiByUtenteConnessione(String utente, Map<Long,EnigmaVO> enigmaVOMap);
 
-    Collection<EnigmaSeguito> getEnigmiSeguiti(String utente);
+    EnigmaSeguitoOutVO getEnigmiSeguiti(String utente);
 
 }

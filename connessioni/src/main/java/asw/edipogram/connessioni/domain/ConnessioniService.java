@@ -1,7 +1,9 @@
 package asw.edipogram.connessioni.domain;
 
+import asw.edipogram.common.event.ConnessioneCreatedEvent;
 import asw.edipogram.connessioni.domain.entity.Connessione;
 import asw.edipogram.connessioni.domain.proxy.ConnectorProxy;
+import asw.edipogram.connessioni.domain.vo.ConnessioneVO;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +22,8 @@ public class ConnessioniService {
 		Connessione connessione = new Connessione(utente, tipo); 
 		connessione = connessioniRepository.save(connessione);
 
-		connectorProxy.forward(connessione);
+		ConnessioneVO connessioneVO = new ConnessioneVO(connessione.getUtente(),connessione.getTipo());
+		connectorProxy.forward(connessioneVO);
 
 		return connessione;
 	}

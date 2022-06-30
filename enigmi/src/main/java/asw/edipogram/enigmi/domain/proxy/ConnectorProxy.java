@@ -1,10 +1,9 @@
 package asw.edipogram.enigmi.domain.proxy;
 
-
-import asw.edipogram.enigmi.domain.entity.Enigma;
+import asw.edipogram.enigmi.domain.vo.EnigmaVO;
 
 public interface ConnectorProxy {
 
-    void forward(Enigma enigmaVO);
+    void forward(EnigmaVO enigmaVO);
 
 }
