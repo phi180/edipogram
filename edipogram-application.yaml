@@ -1,0 +1,532 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enigmi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edipogram
+      service: enigmi
+  template:
+    metadata:
+      labels:
+        app: edipogram
+        service: enigmi
+    spec:
+      containers:
+        - name: enigmi-container
+          image: phi180/enigmi:latest
+          env:
+            - name: SPRING_PROFILE
+              value: kubernetes
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: connessioni
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edipogram
+      service: connessioni
+  template:
+    metadata:
+      labels:
+        app: edipogram
+        service: connessioni
+    spec:
+      containers:
+        - name: connessioni-container
+          image: phi180/connessioni:latest
+          env:
+            - name: SPRING_PROFILE
+              value: kubernetes
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enigmi-seguiti
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edipogram
+      service: enigmi-seguiti
+  template:
+    metadata:
+      labels:
+        app: edipogram
+        service: enigmi-seguiti
+    spec:
+      containers:
+        - name: enigmi-seguiti-container
+          image: phi180/enigmi-seguiti:latest
+          env:
+            - name: SPRING_PROFILE
+              value: kubernetes
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: edipogram
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edipogram
+      service: api-gateway
+  template:
+    metadata:
+      labels:
+        app: edipogram
+        service: api-gateway
+    spec:
+      containers:
+        - name: api-gateway-container
+          image: phi180/api-gateway:latest
+          env:
+            - name: SPRING_PROFILE
+              value: kubernetes
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enigmidb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edipogram
+      service: enigmidb
+  template:
+    metadata:
+      labels:
+        app: edipogram
+        service: enigmidb
+    spec:
+      containers:
+        - image: postgres
+          name: enigmidb-container
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_user
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_dbname
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_password
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: host
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: postgres
+          #volumeMounts:
+          #  - name: postgres-storage
+          #    mountPath: /var/lib/postgresql/data              
+      #volumes:
+      #  - name: postgres-storage
+      #    persistentVolumeClaim:
+      #      claimName: enigmidbvol
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enigmiseguitidb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edipogram
+      service: enigmiseguitidb
+  template:
+    metadata:
+      labels:
+        app: edipogram
+        service: enigmiseguitidb
+    spec:
+      containers:
+        - image: postgres
+          name: enigmiseguitidb-container
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_user
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_dbname_enigmiseguiti
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_password
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: host_enigmiseguiti
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: postgres
+          #volumeMounts:
+          #  - name: postgres-storage
+          #    mountPath: /var/lib/postgresql/data              
+      #volumes:
+      #  - name: postgres-storage
+      #    persistentVolumeClaim:
+      #      claimName: enigmidbvol
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: connessionidb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: edipogram
+      service: connessionidb
+  template:
+    metadata:
+      labels:
+        app: edipogram
+        service: connessionidb
+    spec:
+      containers:
+        - image: postgres
+          name: connessionidb-container
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_user
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_dbname_connessioni
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: postgres_password
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: host_connessioni
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+              name: postgres
+          #volumeMounts:
+          #  - name: postgres-storage
+          #    mountPath: /var/lib/postgresql/data              
+      #volumes:
+      #  - name: postgres-storage
+      #    persistentVolumeClaim:
+      #      claimName: enigmidbvol
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enigmi
+spec:
+  selector:
+    app: edipogram
+    service: enigmi
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: connessioni
+spec:
+  selector:
+    app: edipogram
+    service: connessioni
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enigmi-seguiti
+spec:
+  selector:
+    app: edipogram
+    service: enigmi-seguiti
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+spec:
+  selector:
+    app: edipogram
+    service: api-gateway
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 32082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enigmidb
+spec:
+  selector:
+    app: edipogram
+    service: enigmidb
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: enigmiseguitidb
+spec:
+  selector:
+    app: edipogram
+    service: enigmiseguitidb
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: connessionidb
+spec:
+  selector:
+    app: edipogram
+    service: connessionidb
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: edipogram
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: edipogram
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 8080
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: service-discovery-reader
+rules:
+  - apiGroups: ["", "extensions", "apps"]
+    resources: ["pods", "services", "endpoints"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: service-discovery-reader-binding
+subjects:
+  # all service accounts in any namespace
+  - kind: Group
+    name: system:serviceaccounts
+    apiGroup: ""
+roleRef:
+  kind: ClusterRole
+  name: service-discovery-reader
+  apiGroup: ""
+---
+############################################
+#Postgres
+############################################
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: edipogram
+data:
+  postgres_user: postgres
+  postgres_password: postgres
+  postgres_dbname: enigmidb
+  host: enigmidb
+  postgres_dbname_enigmiseguiti: enigmiseguitidb
+  host_enigmiseguiti: enigmiseguitidb
+  postgres_dbname_connessioni: connessionidb
+  host_connessioni: connessionidb
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: enigmidbvol
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+# ---
+# apiVersion: kafka.strimzi.io/v1beta2
+# kind: Kafka
+# metadata:
+#   name: kafka
+#   namespace: edipogram
+# spec:
+#   kafka:
+#     version: 3.0.0
+#     replicas: 3
+#     listeners:
+#       - name: plain
+#         port: 9092
+#         type: internal
+#         tls: false
+#         configuration:
+#           useServiceDnsDomain: true
+#       - name: tls
+#         port: 9093
+#         tls: true
+#         type: internal
+#       - name: external
+#         port: 9094
+#         tls: true
+#         type: route
+#         authentication:
+#           type: tls
+#     config:
+#       offsets.topic.replication.factor: 3
+#       transaction.state.log.replication.factor: 3
+#       transaction.state.log.min.isr: 2
+#       log.message.format.version: "3.0.0"
+#       auto.create.topics.enable: "true"
+#     storage:
+#       type: jbod
+#       volumes:
+#       - id: 0
+#         type: persistent-claim
+#         size: 1Gi
+#         deleteClaim: false
+#   zookeeper:
+#     replicas: 3
+#     storage:
+#       type: persistent-claim
+#       size: 1Gi
+#       deleteClaim: false
+#   entityOperator:
+#     topicOperator: {}
+#     userOperator: {}
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: kafka
+#   namespace: edipogram
+#   # ...
+# spec:
+#   # ...
+#   selector:
+#     statefulset.kubernetes.io/pod-name: kafka
+#     strimzi.io/cluster: kafka
+#     strimzi.io/kind: Kafka
+#     strimzi.io/name: kafka
+#   type: NodePort
+#   ports:
+#     - protocol: TCP
+#       port: 9092
+#       targetPort: 9092
+# ---
+# apiVersion: kafka.strimzi.io/v1beta2
+# kind: KafkaTopic
+# metadata:
+#   name: enigmi-service-event-channel
+#   namespace: edipogram
+#   labels:
+#     strimzi.io/cluster: "kafka"
+# spec:
+#   partitions: 3
+#   replicas: 1

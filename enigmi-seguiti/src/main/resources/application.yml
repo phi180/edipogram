@@ -1,0 +1,103 @@
+# application.yml 
+--- 
+spring: 
+  application: 
+    name: enigmi-seguiti
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://enigmiseguitidb:5432/enigmiseguitidb?currentSchema=enigmiseguiti_schema
+    #platform: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+  sql:
+    init:
+      mode: always
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL82Dialect
+        jdbc:
+          lob:
+            non_contextual_creation: 'true'
+    database: POSTGRESQL
+    hibernate:
+      use-new-id-generator-mappings: 'true'
+      ddl-auto: none
+  cloud:
+    consul:
+      host: consul
+      port: 8500
+      discovery:
+        instanceId: ${spring.application.name}-${spring.cloud.client.hostname}-${random.value}
+        healthCheckPath: /actuator/health
+        healthCheckInterval: 10s
+        # configurazione per effettuare esprimenti, NON USARE UN PRODUZIONE 
+        # dopo quanto tempo consul deve smettere di restituire servizi che non rispondono all'health check? 
+        healthCheckCriticalTimeout: 45s
+        # consul deve restituire solo servizi che passano l'health check (default=false) 
+        queryPassing: true
+    loadbalancer: 
+      ribbon.enabled: false
+  kafka:
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      auto-offset-reset: earliest
+      group-id: ${spring.application.name}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: '*'
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    bootstrap-servers: kafka:9092
+
+server: 
+  #port: ${PORT:${SERVER_PORT:0}}
+  #port: 8080
+  port: ${PORT:8080}
+
+# fa il logging dei comandi sql eseguiti 
+#spring.jpa.show-sql: true
+# disable OSIV
+spring.jpa.open-in-view: false
+
+listen:
+  auto:
+    start: true
+
+---
+spring:
+  config.activate.on-profile: kubernetes
+  cloud:
+    consul:
+      enabled: false
+      config.enabled: false
+
+listen:
+  auto:
+    start: false
+---
+spring:
+  config.activate.on-profile: local-dev
+  cloud:
+    consul:
+      enabled: false
+      config.enabled: false
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/enigmiseguitidb?currentSchema=enigmiseguiti_schema
+    #platform: postgres
+    password: root
+    driverClassName: org.postgresql.Driver
+
+listen:
+  auto:
+    start: false
+
+server:
+  #port: ${PORT:${SERVER_PORT:0}}
+  #port: 8080
+  port: ${PORT:8083}
