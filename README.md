@@ -88,4 +88,4 @@ asw.edipogram.mode=modalità
 Ci sono tre possibili modalità:
 - MESSAGE: pubblicazione degli eventi in una coda di messaggi
 - REST: invocazione remota
-- REST_ASYNC: invocazione remota asincrona
+- REST_ASYNC: invocazione remota sincrona differita
