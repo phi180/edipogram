@@ -21,11 +21,10 @@ public class EnigmiSeguitiAsyncClientImpl implements EnigmiSeguitiClientAsync {
 
     @Override
     @Async
-    public CompletableFuture<Void> connessioneCreated(ConnessioneCreatedDTO connessioneCreatedDTO) {
+    public void connessioneCreated(ConnessioneCreatedDTO connessioneCreatedDTO) {
         log.info("EnigmiSeguitiAsyncClientImpl - connessioneCreated(): connessioneCreatedDTO={}, baseUrl={}",connessioneCreatedDTO,baseUrl);
 
         restTemplate.postForObject(baseUrl + "/connessioni",connessioneCreatedDTO,Void.class);
-        return new CompletableFuture<>();
     }
 
 }

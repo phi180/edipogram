@@ -209,3 +209,5 @@ gradle-app.setting
 gradle/
 .idea/
 minikube-linux-amd64
+gradlew
+gradlew.bat

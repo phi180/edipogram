@@ -6,6 +6,6 @@ import java.util.concurrent.CompletableFuture;
 
 public interface EnigmiSeguitiClientAsync {
 
-    CompletableFuture<Void> connessioneCreated(ConnessioneCreatedDTO connessioneCreatedDTO);
+    void connessioneCreated(ConnessioneCreatedDTO connessioneCreatedDTO);
 
 }
