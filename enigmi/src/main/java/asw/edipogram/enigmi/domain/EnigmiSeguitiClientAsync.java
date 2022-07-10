@@ -1,11 +1,9 @@
 package asw.edipogram.enigmi.domain;
 
-import asw.edipogram.common.dto.EnigmaCreatedDTO;
-
-import java.util.concurrent.CompletableFuture;
+import asw.edipogram.common.rest.CreateEnigmaRequest;
 
 public interface EnigmiSeguitiClientAsync {
 
-    void createEnigma(EnigmaCreatedDTO enigmaCreatedDTO);
+    void createEnigma(CreateEnigmaRequest createEnigmaRequest);
 
 }

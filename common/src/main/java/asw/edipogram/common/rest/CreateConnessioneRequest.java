@@ -1,4 +1,4 @@
-package asw.edipogram.common.dto;
+package asw.edipogram.common.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ConnessioneCreatedDTO implements Serializable {
+public class CreateConnessioneRequest implements Serializable {
 
     private String utente;
     private String tipo;

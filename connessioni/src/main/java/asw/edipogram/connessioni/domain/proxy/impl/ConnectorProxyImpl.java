@@ -1,6 +1,6 @@
 package asw.edipogram.connessioni.domain.proxy.impl;
 
-import asw.edipogram.common.dto.ConnessioneCreatedDTO;
+import asw.edipogram.common.rest.CreateConnessioneRequest;
 import asw.edipogram.common.event.ConnessioneCreatedEvent;
 import asw.edipogram.connessioni.domain.ConnessioneDomainEventPublisher;
 import asw.edipogram.connessioni.domain.EnigmiSeguitiClient;
@@ -39,9 +39,9 @@ public class ConnectorProxyImpl implements ConnectorProxy {
         if(FORWARD_METHOD.equals(ForwardMethod.MESSAGE.toString())) {
             publisher.publish(new ConnessioneCreatedEvent(connessione.getUtente(),connessione.getTipo()));
         } else if(FORWARD_METHOD.equals(ForwardMethod.REST.toString())) {
-            enigmiSeguitiClient.connessioneCreated(new ConnessioneCreatedDTO(connessione.getUtente(),connessione.getTipo()));
+            enigmiSeguitiClient.connessioneCreated(new CreateConnessioneRequest(connessione.getUtente(),connessione.getTipo()));
         } else if(FORWARD_METHOD.equals(ForwardMethod.REST_ASYNC.toString())) {
-            enigmiSeguitiClientAsync.connessioneCreated(new ConnessioneCreatedDTO(connessione.getUtente(),connessione.getTipo()));
+            enigmiSeguitiClientAsync.connessioneCreated(new CreateConnessioneRequest(connessione.getUtente(),connessione.getTipo()));
         }
 
     }

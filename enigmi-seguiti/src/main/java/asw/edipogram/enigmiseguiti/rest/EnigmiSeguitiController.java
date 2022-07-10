@@ -2,6 +2,7 @@ package asw.edipogram.enigmiseguiti.rest;
 
 import asw.edipogram.enigmiseguiti.domain.entity.EnigmaSeguito;
 import asw.edipogram.enigmiseguiti.domain.service.EnigmiSeguitiService;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import java.util.Collection;
 import java.util.logging.Logger;
 
 @RestController
+@RequestMapping("/enigmiseguiti")
 public class EnigmiSeguitiController {
 
 	private final Logger logger = Logger.getLogger(EnigmiSeguitiController.class.toString()); 
@@ -22,7 +24,7 @@ public class EnigmiSeguitiController {
 	private EnigmiSeguitiService enigmiSeguitiServiceImpl;
 
 	/* Trova gli enigmi (in formato breve) degli utenti seguiti da utente. */ 
-	@GetMapping("/enigmiseguiti/{utente}")
+	@GetMapping("/{utente}")
 	public Collection<EnigmaSeguito> getEnigmiSeguiti(@PathVariable String utente) {
 		Instant start = Instant.now();
 

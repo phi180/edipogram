@@ -1,4 +1,4 @@
-package asw.edipogram.common.dto;
+package asw.edipogram.common.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnigmaCreatedDTO implements Serializable {
+public class CreateEnigmaRequest implements Serializable {
 
     private String autore;
     private String tipo;

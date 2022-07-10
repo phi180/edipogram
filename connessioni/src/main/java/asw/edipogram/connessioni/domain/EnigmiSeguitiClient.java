@@ -1,9 +1,9 @@
 package asw.edipogram.connessioni.domain;
 
-import asw.edipogram.common.dto.ConnessioneCreatedDTO;
+import asw.edipogram.common.rest.CreateConnessioneRequest;
 
 public interface EnigmiSeguitiClient {
 
-    void connessioneCreated(ConnessioneCreatedDTO connessioneCreatedDTO);
+    void connessioneCreated(CreateConnessioneRequest createConnessioneRequest);
 
 }

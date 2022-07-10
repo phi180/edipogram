@@ -3,11 +3,7 @@ package asw.edipogram.connessioni.rest;
 import asw.edipogram.connessioni.domain.*;
 
 import asw.edipogram.connessioni.domain.entity.Connessione;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +11,7 @@ import java.util.logging.Logger;
 import java.util.*; 
 
 @RestController
+@RequestMapping("/connessioni")
 public class ConnessioniController {
 
 	@Autowired 
@@ -24,7 +21,7 @@ public class ConnessioniController {
 
 	/* Crea una nuova connessione. 
 	* La richiesta contiene nel corpo una stringa della forma utente:tipo */ 
-	@PostMapping("/connessioni")
+	@PostMapping
 	public Connessione createConnessione(@RequestBody CreateConnessioneRequest request) {
 		String utente = request.getUtente();
 		String tipo = request.getTipo();
@@ -34,7 +31,7 @@ public class ConnessioniController {
 	}	
 
 	/* Trova tutte le connessioni. */ 
-	@GetMapping("/connessioni")
+	@GetMapping
 	public Collection<Connessione> getConnessioni() {
 		Collection<Connessione> connessioni = null; 
 		logger.info("REST CALL: getConnessioni"); 
@@ -44,7 +41,7 @@ public class ConnessioniController {
 	}
 
 	/* Trova tutte le connessioni di un utente. */ 
-	@GetMapping("/connessioni/{utente}")
+	@GetMapping("/{utente}")
 	public Collection<Connessione> getConnessioni(@PathVariable String utente) {
 		Collection<Connessione> connessioni = null; 
 		logger.info("REST CALL: getConnessioni " + utente); 

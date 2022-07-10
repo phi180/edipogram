@@ -1,6 +1,6 @@
 package asw.edipogram.enigmi.domain.proxy.impl;
 
-import asw.edipogram.common.dto.EnigmaCreatedDTO;
+import asw.edipogram.common.rest.CreateEnigmaRequest;
 import asw.edipogram.common.event.EnigmaCreatedEvent;
 import asw.edipogram.enigmi.domain.EnigmiSeguitiClient;
 import asw.edipogram.enigmi.domain.EnigmaDomainEventPublisher;
@@ -36,13 +36,13 @@ public class ConnectorProxyImpl implements ConnectorProxy {
                     enigma.getTitolo(),enigma.getTesto());
             publisher.publish(enigmaCreatedEvent);
         } else if(FORWARD_METHOD.equals(ForwardMethod.REST.toString())) {
-            EnigmaCreatedDTO enigmaCreatedDTO = new EnigmaCreatedDTO(enigma.getAutore(),enigma.getTipo(),enigma.getTipoSpecifico(),
+            CreateEnigmaRequest createEnigmaRequest = new CreateEnigmaRequest(enigma.getAutore(),enigma.getTipo(),enigma.getTipoSpecifico(),
                     enigma.getTitolo(),enigma.getTesto());
-            enigmiSeguitiClient.createEnigma(enigmaCreatedDTO);
+            enigmiSeguitiClient.createEnigma(createEnigmaRequest);
         } else if(FORWARD_METHOD.equals(ForwardMethod.REST_ASYNC.toString())) {
-            EnigmaCreatedDTO enigmaCreatedDTO = new EnigmaCreatedDTO(enigma.getAutore(),enigma.getTipo(),enigma.getTipoSpecifico(),
+            CreateEnigmaRequest createEnigmaRequest = new CreateEnigmaRequest(enigma.getAutore(),enigma.getTipo(),enigma.getTipoSpecifico(),
                     enigma.getTitolo(),enigma.getTesto());
-            enigmiSeguitiClientAsync.createEnigma(enigmaCreatedDTO);
+            enigmiSeguitiClientAsync.createEnigma(createEnigmaRequest);
         }
 
     }

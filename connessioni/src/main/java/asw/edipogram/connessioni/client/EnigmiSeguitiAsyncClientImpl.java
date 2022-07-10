@@ -1,14 +1,12 @@
 package asw.edipogram.connessioni.client;
 
-import asw.edipogram.common.dto.ConnessioneCreatedDTO;
+import asw.edipogram.common.rest.CreateConnessioneRequest;
 import asw.edipogram.connessioni.domain.EnigmiSeguitiClientAsync;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.concurrent.CompletableFuture;
 
 @Component
 @Slf4j
@@ -21,10 +19,10 @@ public class EnigmiSeguitiAsyncClientImpl implements EnigmiSeguitiClientAsync {
 
     @Override
     @Async
-    public void connessioneCreated(ConnessioneCreatedDTO connessioneCreatedDTO) {
-        log.info("EnigmiSeguitiAsyncClientImpl - connessioneCreated(): connessioneCreatedDTO={}, baseUrl={}",connessioneCreatedDTO,baseUrl);
+    public void connessioneCreated(CreateConnessioneRequest createConnessioneRequest) {
+        log.info("EnigmiSeguitiAsyncClientImpl - connessioneCreated(): createConnessioneRequest={}, baseUrl={}", createConnessioneRequest,baseUrl);
 
-        restTemplate.postForObject(baseUrl + "/connessioni",connessioneCreatedDTO,Void.class);
+        restTemplate.postForObject(baseUrl + "/connessioni", createConnessioneRequest,Void.class);
     }
 
 }

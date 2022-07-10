@@ -1,9 +1,9 @@
 package asw.edipogram.enigmi.domain;
 
-import asw.edipogram.common.dto.EnigmaCreatedDTO;
+import asw.edipogram.common.rest.CreateEnigmaRequest;
 
 public interface EnigmiSeguitiClient {
 
-    void createEnigma(EnigmaCreatedDTO enigmaCreatedDTO);
+    void createEnigma(CreateEnigmaRequest createEnigmaRequest);
 
 }

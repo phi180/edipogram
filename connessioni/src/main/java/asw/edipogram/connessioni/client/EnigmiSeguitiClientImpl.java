@@ -1,6 +1,6 @@
 package asw.edipogram.connessioni.client;
 
-import asw.edipogram.common.dto.ConnessioneCreatedDTO;
+import asw.edipogram.common.rest.CreateConnessioneRequest;
 import asw.edipogram.connessioni.domain.EnigmiSeguitiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +18,12 @@ public class EnigmiSeguitiClientImpl implements EnigmiSeguitiClient {
     private String baseUrl;
 
     @Override
-    public void connessioneCreated(ConnessioneCreatedDTO connessioneCreatedDTO) {
-        log.info("EnigmiSeguitiClientImpl - connessioneCreated(): connessioneCreatedDTO={}, baseUrl={}",connessioneCreatedDTO,baseUrl);
+    public void connessioneCreated(CreateConnessioneRequest createConnessioneRequest) {
+        log.info("EnigmiSeguitiClientImpl - connessioneCreated(): createConnessioneRequest={}, baseUrl={}", createConnessioneRequest,baseUrl);
 
         webClient.post()
                 .uri(baseUrl + "/connessioni")
-                .body(Mono.just(connessioneCreatedDTO), ConnessioneCreatedDTO.class)
+                .body(Mono.just(createConnessioneRequest), CreateConnessioneRequest.class)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();
